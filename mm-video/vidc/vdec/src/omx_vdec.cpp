@@ -6410,6 +6410,7 @@ OMX_ERRORTYPE  omx_vdec::component_deinit(OMX_IN OMX_HANDLETYPE hComp)
         for (i=0; i < drv_ctx.op_buf.actualcount; i++ )
         {
           free_output_buffer (&m_out_mem_ptr[i]);
+          client_buffers.free_output_buffer (&client_buffers.m_out_mem_ptr_client[i]);
 #ifdef _ANDROID_ICS_
         if (m_enable_android_native_buffers)
         {
@@ -7161,7 +7162,7 @@ OMX_ERRORTYPE omx_vdec::fill_buffer_done(OMX_HANDLETYPE hComp,
   }
 
  // update buffer stride so display can interpret the buffer correctly
- if (m_use_smoothstreaming) {
+ if (m_use_smoothstreaming && !output_flush_progress) {
     OMX_U32 buf_index = buffer - m_out_mem_ptr;
     private_handle_t * handle = NULL;
     BufferDim_t dim;
